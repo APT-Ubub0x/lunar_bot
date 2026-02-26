@@ -16,14 +16,39 @@ for (const file of commandFiles) {
 
 const rest = new REST({ version: '10' }).setToken(config.token);
 
-(async () => {
+/*(async () => {
     try {
         console.log('Rimuovo tutti i comandi globali...');
         await rest.put(
-            Routes.applicationCommands('1474104261464817746'), // ID del bot
+            Routes.applicationCommands('1251998362643726437'), // ID del bot
             { body: [] } // corpo vuoto = cancella tutti i comandi
         );
         console.log('Tutti i comandi globali rimossi.');
+    } catch (error) {
+        console.error(error);
+    }
+})();*/
+(async () => {
+    try {
+        console.log('Fetching global commands...');
+
+        const existingCommands = await rest.get(
+            Routes.applicationCommands('1251998362643726437')
+        );
+
+        for (const command of existingCommands) {
+            console.log(`Deleting command: ${command.name}`);
+
+            await rest.delete(
+                Routes.applicationCommand(
+                    '1251998362643726437',
+                    command.id
+                )
+            );
+        }
+
+        console.log('All deletable global commands removed.');
+
     } catch (error) {
         console.error(error);
     }
@@ -33,7 +58,7 @@ const rest = new REST({ version: '10' }).setToken(config.token);
     try {
         console.log('Started refreshing application (/) commands.');
         await rest.put(
-    Routes.applicationGuildCommands('1474104261464817746', '1465340688706306324'),
+    Routes.applicationGuildCommands('1251998362643726437', '1252352240551858257'),
     { body: commands }
 );
         console.log('Successfully reloaded application (/) commands.');
